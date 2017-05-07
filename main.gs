@@ -3,7 +3,7 @@ function myFunction() {
 }
 
 //このファイル外で必要な設定は下記。
-//(1)スクリプトプロパティの設定。Gas_Properties/send_5yCal_to_Slack.txtを参照。
+//(1)スクリプトプロパティの設定。Gas_Properties/post_5yDiary_to_Slack.txtを参照。
 //(2)ライブラリの導入。参考URL: http://qiita.com/soundTricker/items/43267609a870fc9c7453
 //　手順：
 //　　GAS Editorを開きます。
