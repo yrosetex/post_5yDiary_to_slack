@@ -28,6 +28,8 @@ function post5yDiary() {
   var dt = new Date();
   var strDt = Utilities.formatDate(dt, 'JST', 'yyyy-MM-dd');
   var strDt_day = Utilities.formatDate(dt, 'JST', 'M月d日');
+  var dayNames = ['日曜日','月曜日','火曜日','水曜日','木曜日','金曜日','土曜日'];
+  var strDt_name = dayNames[dt.getDay()];
 
 // 1～5年前の日記を取得
   var strBody='x年前の今日（'+strDt_day+'）の日記です。\n';
@@ -35,7 +37,7 @@ function post5yDiary() {
     dt.setFullYear (dt.getFullYear() - 1); //dtを1年、前に戻す
     strDt = Utilities.formatDate(dt, 'JST', 'yyyy-MM-dd');
     strDt_year = Utilities.formatDate(dt, 'JST', 'yyyy年');
-   
+    strDt_name = dayNames[dt.getDay()];
     //MySQLがエラーを出した場合の処理
     try{
       var diary_api_url = PropertiesService.getScriptProperties().getProperty('DIARY_API_URL');
@@ -50,7 +52,7 @@ function post5yDiary() {
     Utilities.sleep(1000);//連続してMySQLを呼ぶと怒られるかも知れないのでsleep      
     
     var jsonRes = JSON.parse(response.getContentText());
-    strBody = strBody + '[' + i + '年前（'+strDt_year+'）の今日]' + '\n'; 
+    strBody = strBody + '[' + i + '年前（'+strDt_year+'）の今日('+strDt_name+')]' + '\n'; 
     strBody = strBody + jsonRes["memo"] + '\n';
   }
 
