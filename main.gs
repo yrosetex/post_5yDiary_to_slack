@@ -2,8 +2,11 @@ function myFunction() {
   
 }
 
+//小改造。7年前、10年前、15年前の日誌も流れるようにする。
+//2020.1.26
+
 //このファイル外で必要な設定は下記。
-//(1)スクリプトプロパティの設定。Gas_Properties/post_5yDiary_to_Slack.txtを参照。
+//(1)スクリプトプロパティの設定。Gas_Properties/post_5yCal_to_Slack.txtを参照。
 //(2)ライブラリの導入。参考URL: http://qiita.com/soundTricker/items/43267609a870fc9c7453
 //　手順：
 //　　GAS Editorを開きます。
@@ -30,7 +33,7 @@ function post5yDiary() {
   var strDt_day = Utilities.formatDate(dt, 'JST', 'M月d日');
   var dayNames = ['日曜日','月曜日','火曜日','水曜日','木曜日','金曜日','土曜日'];
   var strDt_name = dayNames[dt.getDay()];
-
+  
 // 1～5年前の日記を取得
   var strBody='x年前の今日（'+strDt_day+'）の日記です。\n';
   for(var i=1;i<6;i++){
@@ -56,6 +59,75 @@ function post5yDiary() {
     strBody = strBody + jsonRes["memo"] + '\n';
   }
 
+//7年前の日誌を取得
+  dt = new Date();
+  dt.setFullYear (dt.getFullYear() - 7); //dtを7年前に戻す
+    strDt = Utilities.formatDate(dt, 'JST', 'yyyy-MM-dd');
+    strDt_year = Utilities.formatDate(dt, 'JST', 'yyyy年');
+    strDt_name = dayNames[dt.getDay()];
+    //MySQLがエラーを出した場合の処理
+    try{
+      var diary_api_url = PropertiesService.getScriptProperties().getProperty('DIARY_API_URL');
+      var response = UrlFetchApp.fetch(diary_api_url + "?date=" + strDt + "&key=" + strKey);
+    }
+    catch(e){
+      MailApp.sendEmail(PropertiesService.getScriptProperties().getProperty('MAIL_ADDR') , 'post5yDiary実行時のエラー', e);
+      //Logger.log(e);
+      return;
+    }
+    
+    Utilities.sleep(1000);//連続してMySQLを呼ぶと怒られるかも知れないのでsleep      
+    
+    var jsonRes = JSON.parse(response.getContentText());
+    strBody = strBody + '[7年前（'+strDt_year+'）の今日('+strDt_name+')]' + '\n'; 
+    strBody = strBody + jsonRes["memo"] + '\n';
+  
+//10年前の日誌を取得
+  dt = new Date();
+  dt.setFullYear (dt.getFullYear() - 10); //dtを10年前に戻す
+    strDt = Utilities.formatDate(dt, 'JST', 'yyyy-MM-dd');
+    strDt_year = Utilities.formatDate(dt, 'JST', 'yyyy年');
+    strDt_name = dayNames[dt.getDay()];
+    //MySQLがエラーを出した場合の処理
+    try{
+      var diary_api_url = PropertiesService.getScriptProperties().getProperty('DIARY_API_URL');
+      var response = UrlFetchApp.fetch(diary_api_url + "?date=" + strDt + "&key=" + strKey);
+    }
+    catch(e){
+      MailApp.sendEmail(PropertiesService.getScriptProperties().getProperty('MAIL_ADDR') , 'post5yDiary実行時のエラー', e);
+      //Logger.log(e);
+      return;
+    }
+    
+    Utilities.sleep(1000);//連続してMySQLを呼ぶと怒られるかも知れないのでsleep      
+    
+    var jsonRes = JSON.parse(response.getContentText());
+    strBody = strBody + '[10年前（'+strDt_year+'）の今日('+strDt_name+')]' + '\n'; 
+    strBody = strBody + jsonRes["memo"] + '\n';
+  
+//15年前の日誌を取得
+  dt = new Date();
+  dt.setFullYear (dt.getFullYear() - 15); //dtを15年前に戻す
+    strDt = Utilities.formatDate(dt, 'JST', 'yyyy-MM-dd');
+    strDt_year = Utilities.formatDate(dt, 'JST', 'yyyy年');
+    strDt_name = dayNames[dt.getDay()];
+    //MySQLがエラーを出した場合の処理
+    try{
+      var diary_api_url = PropertiesService.getScriptProperties().getProperty('DIARY_API_URL');
+      var response = UrlFetchApp.fetch(diary_api_url + "?date=" + strDt + "&key=" + strKey);
+    }
+    catch(e){
+      MailApp.sendEmail(PropertiesService.getScriptProperties().getProperty('MAIL_ADDR') , 'post5yDiary実行時のエラー', e);
+      //Logger.log(e);
+      return;
+    }
+    
+    Utilities.sleep(1000);//連続してMySQLを呼ぶと怒られるかも知れないのでsleep      
+    
+    var jsonRes = JSON.parse(response.getContentText());
+    strBody = strBody + '[15年前（'+strDt_year+'）の今日('+strDt_name+')]' + '\n'; 
+    strBody = strBody + jsonRes["memo"] + '\n';
+  
 //Logger.log(strBody);
   
 //slackへのpost
